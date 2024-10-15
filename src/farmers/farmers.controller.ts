@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { FarmersService } from './farmers.service';
 import { CreateFarmerDto } from './dto/create-farmer.dto';
-import { UpdateFarmerDto } from './dto/update-farmer.dto';
 
 @Controller('farmers')
 export class FarmersController {
@@ -9,26 +8,22 @@ export class FarmersController {
 
   @Post()
   create(@Body() createFarmerDto: CreateFarmerDto) {
-    return this.farmersService.create(createFarmerDto);
+    return this.farmersService.createFarmer(createFarmerDto);
   }
 
   @Get()
   findAll() {
-    return this.farmersService.findAll();
+    return this.farmersService.findAllFarmers();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.farmersService.findOne(+id);
+  findById(@Param('id') id: string) {
+    return this.farmersService.findFarmerById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFarmerDto: UpdateFarmerDto) {
-    return this.farmersService.update(+id, updateFarmerDto);
-  }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.farmersService.remove(+id);
+  delete(@Param('id') id: string) {
+    return this.farmersService.deleteFarmer(id);
   }
 }

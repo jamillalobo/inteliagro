@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFarmerDto } from './dto/create-farmer.dto';
-import { UpdateFarmerDto } from './dto/update-farmer.dto';
+import { Farmer } from '../db/entities/farmer.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class FarmersService {
-  create(createFarmerDto: CreateFarmerDto) {
-    return 'This action adds a new farmer';
+  constructor(
+    @InjectRepository(Farmer) private readonly farmerRepository: Repository<Farmer>,
+  ) { }
+
+  async createFarmer(createFarmerDto: CreateFarmerDto): Promise<Farmer> {
+    // Criar o objeto da conta
+    const farmer = this.farmerRepository.create(createFarmerDto) as Farmer;
+
+    const newFarmer = this.farmerRepository.save(farmer);
+
+    return newFarmer;
   }
 
-  findAll() {
-    return `This action returns all farmers`;
+  async findAllFarmers(): Promise<Farmer[]> {
+    const farmers = await this.farmerRepository.find();
+
+    if (farmers.length === 0 || !farmers) {
+      throw new NotFoundException('No farmers found');
+    }
+
+    return farmers;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} farmer`;
+  async findFarmerById(id: string): Promise<Farmer> {
+    const farmer = await this.farmerRepository.findOne({ 
+      where: { id }, 
+      relations: ['transactions'], 
+    });
+  
+    if (!farmer) {
+      throw new NotFoundException('farmer not found');
+    }
+  
+    return farmer;
   }
+  
+  async deleteFarmer(id: string): Promise<Farmer> {
+    const farmer = this.farmerRepository.findOne({ where: { id } });
 
-  update(id: number, updateFarmerDto: UpdateFarmerDto) {
-    return `This action updates a #${id} farmer`;
-  }
+    if (!farmer) {
+      throw new NotFoundException(`farmer not found`);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} farmer`;
+    this.farmerRepository.delete(id);
+
+    return farmer;
   }
 }
