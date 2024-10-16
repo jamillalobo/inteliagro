@@ -1,5 +1,5 @@
-import { Agronomist } from "src/db/entities/agronomist.entity";
-import { Plantation } from "src/db/entities/plantation.entity";
+import { Agronomist } from "src/agronomists/entities/agronomist.entity";
+import { Plantation } from "src/plantation/entities/plantation.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "farmers" })
@@ -22,18 +22,16 @@ export class Farmer {
     })
     agronomist: Agronomist;
 
-    @Column({ name: 'phone', nullable: true })
-    phone: string;
-
     @Column({ name: 'size_property', nullable: false })
     sizeProperty: number;
 
-    @OneToMany(() => Plantation, (plantation) => plantation.farmerId, {
+    @OneToMany(() => Plantation, (plantation) => plantation.farmer, {
         cascade: true,
         eager: true,
     })
     plantations: Plantation[];
 
-    @Column({ name: 'created_at', type: 'date' })
+    @Column({ name: 'created_at', type: 'timestamptz' })
     createdAt: Date;
+
 }

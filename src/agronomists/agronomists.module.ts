@@ -1,11 +1,14 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AgronomistsService } from './agronomists.service';
 import { AgronomistsController } from './agronomists.controller';
-import { Agronomist } from '../db/entities/agronomist.entity';
+import { Agronomist } from './entities/agronomist.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FarmersModule } from 'src/farmers/farmers.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Agronomist])],
+  imports: [TypeOrmModule.forFeature([Agronomist]),
+  forwardRef(() => FarmersModule)],
+  exports: [AgronomistsService],
   controllers: [AgronomistsController],
   providers: [AgronomistsService],
 })

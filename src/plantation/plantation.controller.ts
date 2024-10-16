@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { PlantationService } from './plantation.service';
 import { CreatePlantationDto } from './dto/create-plantation.dto';
 import { UpdatePlantationDto } from './dto/update-plantation.dto';
-import { Plantation } from '../db/entities/plantation.entity';
+import { Plantation } from './entities/plantation.entity';
 
 @Controller('plantations')
 export class PlantationController {

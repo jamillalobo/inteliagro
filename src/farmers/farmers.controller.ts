@@ -16,9 +16,9 @@ export class FarmersController {
     return this.farmersService.findAllFarmers();
   }
 
-  @Get(':id')
-  findById(@Param('id') id: string) {
-    return this.farmersService.findFarmerById(id);
+  @Get(':cpf')
+  findByCpf(@Param('cpf') cpf: string) {
+    return this.farmersService.findFarmerByCpf(cpf);
   }
 
 

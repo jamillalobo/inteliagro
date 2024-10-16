@@ -1,4 +1,4 @@
-import { Farmer } from "src/db/entities/farmer.entity";
+import { Farmer } from "src/farmers/entities/farmer.entity";
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 
 @Entity({ name: "plantations" })
@@ -25,6 +25,6 @@ export class Plantation {
         nullable: false,
         onDelete: 'CASCADE'
     })
-    farmerId: string;
+    farmer: Farmer;
 
 }

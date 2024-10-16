@@ -1,5 +1,4 @@
 import {
-    IsEmail,
     IsNotEmpty,
     IsNumber,
     IsString,
@@ -14,7 +13,4 @@ export class CreateAgronomistDto {
     @IsNotEmpty()
     @Length(11, 11)
     cpf: string;
-
-    @IsEmail()
-    email: string;
 }

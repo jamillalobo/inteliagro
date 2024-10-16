@@ -18,10 +18,10 @@ export class CreateFarmerDto {
     @IsString()
     cep: string;
 
-    @IsString()
-    phone: string;
-
     @IsNotEmpty()
     @IsNumber()
     sizeProperty: number;
+
+    @IsNotEmpty()
+    agronomistId: string;
 }

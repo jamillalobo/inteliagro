@@ -1,5 +1,5 @@
 // Example of Hashtable in JavaScript
-const plantingCombinations = {
+export const plantingCombinations = {
     "combination1": {
         "species": ["Eucalyptus", "Corn", "Beans"],
         "area": 2, 

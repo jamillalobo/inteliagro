@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAgronomistDto } from './dto/create-agronomist.dto';
-import { Agronomist } from '../db/entities/agronomist.entity';
+import { Agronomist } from './entities/agronomist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -17,25 +17,44 @@ export class AgronomistsService {
     return newagronomist;
   }
 
-  async findAllAgronomists(): Promise<Agronomist[]> {
-   const agronomists = await this.agronomistRepository.find();
+  async findAllAgronomists(): Promise<any[]> {
+    const agronomists = await this.agronomistRepository.createQueryBuilder('agronomist')
+        .leftJoinAndSelect('agronomist.farmers', 'farmers')  // Faz o join com os farmers
+        .select([
+            'agronomist.id', 
+            'agronomist.name', 
+            'agronomist.cpf', 
+            'farmers.id',    // Seleciona apenas o id dos farmers
+            'farmers.cpf'    // Seleciona apenas o cpf dos farmers
+        ])
+        .getMany();  // Busca todos os agronomists
 
-   if(!agronomists || agronomists.length === 0) {
-     throw new NotFoundException('No agronomists found');
-   }
+    if (!agronomists || agronomists.length === 0) {
+        throw new NotFoundException('No agronomists found');
+    }
 
     return agronomists;
-  }
+}
 
-  async findAgronomistByCpf(cpf: string): Promise<Agronomist> {
-    const agronomist = await this.agronomistRepository.findOne({
-      where: { cpf },
-      relations: ['farmers'], // join qu inclui contas associadas 
-    });
+
+  async findAgronomistByCpf(cpf: string): Promise<any> {
+    const agronomist = await this.agronomistRepository.createQueryBuilder('agronomist')
+        .leftJoinAndSelect('agronomist.farmers', 'farmers')  // Join com os farmers
+        .select([
+            'agronomist.id', 
+            'agronomist.name', 
+            'agronomist.cpf', 
+            'farmers.id',      
+            'farmers.cpf'        
+        ])
+        .where('agronomist.cpf = :cpf', { cpf })
+        .getOne();
   
     if (!agronomist) {
-      throw new NotFoundException('agronomist not found');
+        throw new NotFoundException('Agronomist not found');
     }
+
     return agronomist;
-  }
+}
+
 }
