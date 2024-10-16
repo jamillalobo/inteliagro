@@ -45,7 +45,18 @@ export class PlantationService {
   
 
   async updatePlantation(id: string, updatePlantationDto: UpdatePlantationDto): Promise<Plantation> {
-    await this.plantationRepository.update(id, updatePlantationDto);
+
+    const combinationUpdate = this.chooseCombination(updatePlantationDto.area, updatePlantationDto.waterConsumption, updatePlantationDto.plantingStage);
+    
+    if(!combinationUpdate) {
+      throw new Error("couldn't create combination!");
+    }
+
+    await this.plantationRepository.update(id, {
+      ...updatePlantationDto,
+      combination: combinationUpdate 
+    });
+
     return await this.plantationRepository.findOneBy({ id });
   }
 

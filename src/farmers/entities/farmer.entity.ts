@@ -18,7 +18,7 @@ export class Farmer {
 
     @ManyToOne(() => Agronomist, (agronomist) => agronomist.farmers, {
         nullable: false,
-        onDelete: 'CASCADE'  // Ensures that if agronomist is deleted, associated farmers are also deleted
+        onDelete: 'CASCADE'  
     })
     agronomist: Agronomist;
 

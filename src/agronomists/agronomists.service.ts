@@ -19,15 +19,15 @@ export class AgronomistsService {
 
   async findAllAgronomists(): Promise<any[]> {
     const agronomists = await this.agronomistRepository.createQueryBuilder('agronomist')
-        .leftJoinAndSelect('agronomist.farmers', 'farmers')  // Faz o join com os farmers
+        .leftJoinAndSelect('agronomist.farmers', 'farmers')  
         .select([
             'agronomist.id', 
             'agronomist.name', 
             'agronomist.cpf', 
-            'farmers.id',    // Seleciona apenas o id dos farmers
-            'farmers.cpf'    // Seleciona apenas o cpf dos farmers
+            'farmers.id',   
+            'farmers.cpf'    
         ])
-        .getMany();  // Busca todos os agronomists
+        .getMany();  
 
     if (!agronomists || agronomists.length === 0) {
         throw new NotFoundException('No agronomists found');
@@ -39,7 +39,7 @@ export class AgronomistsService {
 
   async findAgronomistByCpf(cpf: string): Promise<any> {
     const agronomist = await this.agronomistRepository.createQueryBuilder('agronomist')
-        .leftJoinAndSelect('agronomist.farmers', 'farmers')  // Join com os farmers
+        .leftJoinAndSelect('agronomist.farmers', 'farmers')  
         .select([
             'agronomist.id', 
             'agronomist.name', 
