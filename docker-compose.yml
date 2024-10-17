@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - DB_HOST=localhost # Endereço do banco de dados existente na EC2
+      - DB_HOST='18.224.109.231' # Endereço do banco de dados existente na EC2
       - DB_USER=postgres
       - DB_PASSWORD=12345678
       - DB_NAME=postgres

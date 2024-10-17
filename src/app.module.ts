@@ -20,7 +20,6 @@ import { CepRepository } from './utils/cep-repository';
       migrations: ['.src/infraestructure/persistence/migrations/*.ts'],
       autoLoadEntities: true,
       synchronize: false,
-      retryAttempts: 5,
       retryDelay: 3000,
       logging: true,
     }),
