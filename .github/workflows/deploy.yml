@@ -9,9 +9,12 @@ jobs:
   deploy:
     runs-on: [aws-ec2]  # Rodar diretamente no runner EC2
     steps:
+      - name: Fix permissions
+        run: sudo chown -R ubuntu:ubuntu /home/ubuntu/actions-runner/_work/inteliagro/inteliagro/pgdata
+
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Build Docker image on EC2
         run: docker build -t inteliagro-app .
 
