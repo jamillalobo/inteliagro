@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AgronomistsModule } from './agronomists/agronomists.module';
-import { FarmersModule } from './farmers/farmers.module';
-import { PlantationModule } from './plantation/plantation.module';
+import { AgronomistsModule } from './application/agronomists.module';
+import { FarmersModule } from './application/farmers.module';
+import { PlantationModule } from './application/plantation.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HttpModule } from '@nestjs/axios';
+import { CepRepository } from './utils/cep-repository';
 
 @Module({
   imports: [
@@ -11,12 +13,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'db', // Use a variável de ambiente ou 'db' como padrão
-      port: +process.env.DB_PORT || 5432, // Converta para número
-      username: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASSWORD || '12345678',
-      database: process.env.DB_NAME || 'postgres',
+      port: +process.env.DB_PORT, // Converta para número
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      migrations: ['.src/infrastructure/persistence/migrations/*.ts'],
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
       retryAttempts: 5,
       retryDelay: 3000,
       logging: true,
@@ -24,8 +27,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     AgronomistsModule,
     FarmersModule,
     PlantationModule,
+    HttpModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [CepRepository],
+  exports: [CepRepository],
 })
 export class AppModule {}
