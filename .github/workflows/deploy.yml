@@ -13,7 +13,7 @@ jobs:
       - name: Login on my docker hub
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build docker image
-        run: docker build -t jamillalobo/inteliagro-app . 
+        run: docker build -t jamillalobo/inteliagro-app .
       - name: Push docker image on docker hub
         run: docker push jamillalobo/inteliagro-app:latest
 
@@ -21,11 +21,11 @@ jobs:
     needs: build
     runs-on: [aws-ec2]
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4        
       - name: Stop and remove old containers
-        run: |
-          cd actions-runner  # Ensure you are in the correct directory
-          docker-compose down
+        run: docker-compose down
+      - name: Pull latest Docker image
+        run: docker pull jamillalobo/inteliagro-app:latest 
       - name: Build and start containers
-        run: |
-          cd actions-runner  # Ensure you are in the correct directory
-          docker-compose up --build -d
+        run: docker-compose up --build -d 
