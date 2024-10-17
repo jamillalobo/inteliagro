@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [Farmer, Agronomist, Plantation],
-    migrations: ['./src/infrastructure/persistence/migration/*.ts'],
+    migrations: ['./src/infraestructure/persistence/migration/*.ts'],
     synchronize: false,
     migrationsRun: true,// auto reinicia o banco toda vez que roda a aplicação
 });

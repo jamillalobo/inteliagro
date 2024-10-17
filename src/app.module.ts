@@ -17,7 +17,7 @@ import { CepRepository } from './utils/cep-repository';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      migrations: ['.src/infrastructure/persistence/migrations/*.ts'],
+      migrations: ['.src/infraestructure/persistence/migrations/*.ts'],
       autoLoadEntities: true,
       synchronize: false,
       retryAttempts: 5,
