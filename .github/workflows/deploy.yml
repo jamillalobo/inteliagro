@@ -1,31 +1,22 @@
-name: deploy inteliagro
+name: Deploy inteliagro-app to EC2
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
-  build:
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-      - name: Login on my docker hub
-        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build docker image
-        run: docker build -t jamillalobo/inteliagro-app .
-      - name: Push docker image on docker hub
-        run: docker push jamillalobo/inteliagro-app:latest
-
   deploy:
-    needs: build
-    runs-on: [aws-ec2]
+    runs-on: [aws-ec2]  # Rodar diretamente no runner EC2
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4        
+        uses: actions/checkout@v4
+      
+      - name: Build Docker image on EC2
+        run: docker build -t inteliagro-app .
+
       - name: Stop and remove old containers
-        run: docker-compose down
-      - name: Pull latest Docker image
-        run: docker pull jamillalobo/inteliagro-app:latest 
-      - name: Build and start containers
-        run: docker-compose up --build -d 
+        run: docker-compose down || true  # Parar apenas o serviço da aplicação
+      
+      - name: Start new containers
+        run: docker-compose up --build -d
