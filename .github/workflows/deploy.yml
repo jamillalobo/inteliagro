@@ -31,16 +31,16 @@ jobs:
             inteliagro-db.tar
 
   deploy:
+    # O runner é self-hosted, então ele pode acessar diretamente os arquivos da própria máquina
     needs: build
     runs-on: [self-hosted, linux]
     steps:
       - name: Download docker images
-        uses: actions/download-artifact@v3
-        with:
-          name: docker-images
-
-      - name: Load docker images
         run: |
+          # Como o runner está rodando localmente na mesma máquina, você não precisa baixar os arquivos.
+          # Se os arquivos foram criados na mesma máquina, apenas use-os diretamente.
+
+          # Carregar as imagens Docker criadas
           docker load -i inteliagro-app.tar
           docker load -i inteliagro-db.tar
 
