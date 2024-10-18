@@ -1,6 +1,6 @@
 import { Agronomist } from "src/domain/entities/agronomist.entity";
 import { Plantation } from "src/domain/entities/plantation.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, JoinColumn } from "typeorm";
 
 @Entity({ name: "farmers" })
 export class Farmer {
@@ -18,8 +18,9 @@ export class Farmer {
 
     @ManyToOne(() => Agronomist, (agronomist) => agronomist.farmers, {
         nullable: false,
-        onDelete: 'CASCADE'  
+        onDelete: 'CASCADE'
     })
+    @JoinColumn({ name: 'agronomist_id' }) // Define explicitamente a coluna de junção
     agronomist: Agronomist;
 
     @Column({ name: 'size_property', nullable: false })
@@ -31,7 +32,6 @@ export class Farmer {
     })
     plantations: Plantation[];
 
-    @Column({ name: 'created_at', type: 'timestamptz' })
+    @Column({ name: 'created_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
-
 }
