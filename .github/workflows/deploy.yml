@@ -1,25 +1,51 @@
-name: Deploy inteliagro-app to EC2
+name: deploy inteliagro
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
-  deploy:
-    runs-on: [aws-ec2]  # Rodar diretamente no runner EC2
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Fix permissions
-        run: sudo chown -R ubuntu:ubuntu /home/ubuntu/actions-runner/_work/inteliagro/inteliagro/pgdata
-
-      - name: Checkout code
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Build Docker image on EC2
+      - name: Build docker image for app
         run: docker build -t inteliagro-app .
 
+      - name: Build docker image for db
+        run: docker build -t inteliagro-db .
+
+      - name: Save docker images
+        run: |
+          docker save inteliagro-app -o inteliagro-app.tar
+          docker save inteliagro-db -o inteliagro-db.tar
+
+      - name: Upload images as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-images
+          path: |
+            inteliagro-app.tar
+            inteliagro-db.tar
+
+  deploy:
+    needs: build
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Download docker images
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-images
+
+      - name: Load docker images
+        run: |
+          docker load -i inteliagro-app.tar
+          docker load -i inteliagro-db.tar
+
       - name: Stop and remove old containers
-        run: docker-compose down || true  # Parar apenas o serviço da aplicação
-      
-      - name: Start new containers
+        run: docker-compose down
+
+      - name: Build and start containers
         run: docker-compose up --build -d

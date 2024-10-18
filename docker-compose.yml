@@ -1,14 +1,42 @@
-version: '3.5'
+version: '3.8'
 
 services:
-  app:
+  inteliagro-db:
+    image: postgres:latest
+    container_name: inteliagro-db
+    environment:
+      POSTGRES_DB: postgres # Nome do banco de dados
+      POSTGRES_USER: postgres # Nome de usuário do banco de dados
+      POSTGRES_PASSWORD: "12345678" # Senha como string
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Persistência de dados
+    ports:
+      - "5432:5432" # Porta do banco de dados
+    networks:
+      - inteliagro-network
+
+  inteliagro-app:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: inteliagro-app
     environment:
-      - DB_HOST=inteliagro-db # Endereço do banco de dados existente na EC2
-      - DB_USER=postgres
-      - DB_PASSWORD=12345678
-      - DB_NAME=postgres
+      PORT: "3000" # Porta da aplicação
+      DB_HOST: inteliagro-db # Nome do serviço do banco de dados
+      DB_PORT: "5432" # Porta do banco de dados
+      DB_USER: postgres # Nome de usuário do banco de dados
+      DB_PASSWORD: "12345678" # Senha como string
+      DB_NAME: postgres # Nome do banco de dados
     ports:
-      - '3000:3000'
+      - "3000:3000" # Porta da aplicação exposta
+    depends_on:
+      - inteliagro-db # Dependência do banco de dados
+    networks:
+      - inteliagro-network
+
+volumes:
+  pgdata:
+    # Volume para persistência de dados
+
+networks:
+  inteliagro-network: # Rede customizada
