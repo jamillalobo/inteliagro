@@ -25,8 +25,14 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [self-hosted, linux]
+    runs-on: [aws-ec2]
     steps:
+      - name: Clean up Docker
+        run: |
+          docker container prune -f
+          docker image prune -a -f
+          docker volume prune -f
+
       - name: Download app image
         uses: actions/download-artifact@v3
         with:
