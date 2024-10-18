@@ -14,38 +14,32 @@ jobs:
       - name: Build docker image for app
         run: docker build -t inteliagro-app .
 
-      - name: Build docker image for db
-        run: docker build -t inteliagro-db .
+      - name: Save docker image for app
+        run: docker save inteliagro-app -o inteliagro-app.tar
 
-      - name: Save docker images
-        run: |
-          docker save inteliagro-app -o inteliagro-app.tar
-          docker save inteliagro-db -o inteliagro-db.tar
-
-      - name: Upload images as artifacts
+      - name: Upload app image as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: docker-images
-          path: |
-            inteliagro-app.tar
-            inteliagro-db.tar
+          name: docker-image-app
+          path: inteliagro-app.tar
 
   deploy:
-    # O runner é self-hosted, então ele pode acessar diretamente os arquivos da própria máquina
     needs: build
     runs-on: [self-hosted, linux]
     steps:
-      - name: Download docker images
-        run: |
-          # Como o runner está rodando localmente na mesma máquina, você não precisa baixar os arquivos.
-          # Se os arquivos foram criados na mesma máquina, apenas use-os diretamente.
+      - name: Download app image
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image-app
 
-          # Carregar as imagens Docker criadas
-          docker load -i inteliagro-app.tar
-          docker load -i inteliagro-db.tar
+      - name: Load docker image
+        run: docker load -i inteliagro-app.tar
 
       - name: Stop and remove old containers
         run: docker-compose down
+
+      - name: Pull latest postgres image
+        run: docker pull postgres:latest
 
       - name: Build and start containers
         run: docker-compose up --build -d
