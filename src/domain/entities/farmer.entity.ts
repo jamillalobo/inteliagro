@@ -18,7 +18,7 @@ export class Farmer {
 
     @ManyToOne(() => Agronomist, (agronomist) => agronomist.farmers, {
         nullable: false,
-        onDelete: 'CASCADE'  
+        onDelete: 'CASCADE'
     })
     @JoinColumn({ name: 'agronomist_id' })
     agronomist: Agronomist;
@@ -32,7 +32,6 @@ export class Farmer {
     })
     plantations: Plantation[];
 
-    @Column({ name: 'created_at', type: 'timestamptz' })
+    @Column({ name: 'created_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
-
 }
