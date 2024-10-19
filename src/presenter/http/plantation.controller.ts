@@ -16,18 +16,10 @@ export class PlantationController {
       const plantation = await this.plantationService.createPlantation(createPlantationDto);
       return response.status(HttpStatus.CREATED).json({
         message: 'Plantation successfully created',
-        plantation: {
-          id: plantation.id,
-          combination: plantation.combination, 
-          farmer: plantation.farmer.id,          
-        },
+        plantation,
       });
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Error: Plantation not created!',
-        error: 'Bad Request',
-      });
+      console.error('Error creating plantation:', error);
     }
   }
 
@@ -43,7 +35,7 @@ export class PlantationController {
         plantations,
       });
     } catch (error) {
-      return response.status(error.status).json(error.response);
+      return response.status((error as any).status).json((error as any).response);
     }
   }
 
