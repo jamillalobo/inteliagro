@@ -43,7 +43,7 @@ export class FarmersController {
         farmers: filteredFarmers
       });
     } catch (error) {
-      return response.status(error.status).json(error.response);
+      return response.status((error as any).status).json((error as any).response);
     }
   }
 
@@ -59,7 +59,7 @@ export class FarmersController {
         message: 'Farmer found successfully',
         farmer})
     } catch (error) {
-      return response.status(error.status).json(error.response); 
+      return response.status((error as any).status).json((error as any).response);
     }
   }
 

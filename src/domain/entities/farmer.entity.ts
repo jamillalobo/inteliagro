@@ -1,6 +1,6 @@
 import { Agronomist } from "src/domain/entities/agronomist.entity";
 import { Plantation } from "src/domain/entities/plantation.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, JoinColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "farmers" })
 export class Farmer {
@@ -20,7 +20,7 @@ export class Farmer {
         nullable: false,
         onDelete: 'CASCADE'
     })
-    @JoinColumn({ name: 'agronomist_id' }) // Define explicitamente a coluna de junção
+    @JoinColumn({ name: 'agronomist_id' })
     agronomist: Agronomist;
 
     @Column({ name: 'size_property', nullable: false })

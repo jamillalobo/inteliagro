@@ -1,7 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class $npmConfigName1729009400918 implements MigrationInterface {
-
+export class AgronomistsFarmersPlantationsTables1729301843646 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         // Criação da extensão para UUID
         await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);

@@ -1,5 +1,5 @@
 import { Farmer } from "src/domain/entities/farmer.entity";
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
 
 @Entity({ name: "plantations" })
 export class Plantation {
@@ -25,6 +25,7 @@ export class Plantation {
         nullable: false,
         onDelete: 'CASCADE'
     })
+    @JoinColumn({ name: 'farmer_id' })
     farmer: Farmer;
 
 }

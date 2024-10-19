@@ -21,11 +21,11 @@ export class AgronomistsController {
           cpf: agronomist.cpf
         }
       });
-    } catch (error) {
+    } catch (err) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
-        message: 'Error: Agronomist not created!',
-        error: 'Bad Request'
+        message: 'err: Agronomist not created!',
+        err: 'Bad Request'
       });
     }
   }
@@ -43,8 +43,8 @@ export class AgronomistsController {
       return response.status(HttpStatus.OK).json({
         message: 'All agronomists found successfully',
         agronomists: filteredAgronomists});      
-    } catch (error) {
-      return response.status(error.status).json(error.response);
+    } catch (err) {
+      return response.status((err as any).status).json((err as any).response);
     }
   }
 
@@ -59,8 +59,8 @@ export class AgronomistsController {
       return response.status(HttpStatus.OK).json({
         message: 'Agronomist found successfully',
         agronomist});
-    } catch (error) {
-      return response.status(error.status).json(error.response);
+    } catch (err) {
+      return response.status((err as any).status).json((err as any).response);
     }
   }
 }

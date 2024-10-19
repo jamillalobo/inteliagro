@@ -14,37 +14,36 @@ export class FarmersService {
     @InjectRepository(Farmer) private readonly farmerRepository: Repository<Farmer>,
     private readonly agronomistsService: AgronomistsService,
     private readonly cepRepository: CepRepository,
+    
   ) { }
 
 
   async createFarmer(createFarmerDto: CreateFarmerDto): Promise<Farmer> {
+    // Busca o agrônomo pelo CPF fornecido no DTO
     const agronomist = await this.agronomistsService.findAgronomistByCpf(createFarmerDto.agronomistCpf);
 
+    // Verifica se o agrônomo foi encontrado
     if (!agronomist) {
-      throw new Error('Agronomist not found');  
+        throw new Error('Agronomist not found');  
     }
 
-
+    // Valida o CPF do agricultor usando um validador
     const isValidCpf = CpfValidator.isValid(createFarmerDto.cpf);
     if (!isValidCpf) {
-      throw new BadRequestException('Invalid CPF');
+        throw new BadRequestException('Invalid CPF');
     }
 
-    const logradouro = await this.cepRepository.getCep(createFarmerDto.cep);
-
-    if (!logradouro) {
-      throw new Error('Could not create a client with no valid logradouro');
-    }
-
+    // Cria uma nova entidade de agricultor com os dados fornecidos
     const farmer = this.farmerRepository.create({
-      ...createFarmerDto,
-      agronomist: agronomist, 
-      cep: logradouro,
-      createdAt: new Date(),
+        ...createFarmerDto,
+        agronomist: agronomist, // Associa o agricultor ao agrônomo encontrado
+        createdAt: new Date(), // Define a data de criação
     });
 
+    // Salva o agricultor no repositório
     return this.farmerRepository.save(farmer);
-  }
+}
+
 
   async findAllFarmers(): Promise<Farmer[]> {
     const farmers = await this.farmerRepository.find();

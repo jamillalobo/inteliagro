@@ -18,23 +18,38 @@ export class PlantationService {
     const farmer = await this.farmerService.findFarmerByCpf(createPlantationDto.farmerCpf);
 
     if (!farmer) {
-      throw new Error('Farmer not found');
+        throw new Error('Farmer not found');
     }
 
-    const combination = this.chooseCombination(createPlantationDto.area, createPlantationDto.waterConsumption, createPlantationDto.plantingStage);
+    const combination = this.chooseCombination(
+      createPlantationDto.area,
+      createPlantationDto.waterConsumption,
+      createPlantationDto.plantingStage
+  );
   
-    if(!combination) {
-      throw new Error("couldn't create combination!");
-    }
+  const combinationArray = this.chooseCombination(
+    createPlantationDto.area, 
+    createPlantationDto.waterConsumption, 
+    createPlantationDto.plantingStage
+);
 
-    const plantation = this.plantationRepository.create({
-      ...createPlantationDto,
-      farmer: farmer,
-      combination: combination 
-  });
+// Converte o array de strings para o formato de array do PostgreSQL
+const formattedCombination = combinationArray;
 
-    return await this.plantationRepository.save(plantation);
+// Cria a plantação usando o formato correto
+const plantation = this.plantationRepository.create({
+    ...createPlantationDto,
+    farmer,
+    combination: formattedCombination, // Passa a combinação formatada corretamente
+    waterConsumption: createPlantationDto.waterConsumption.toString(),
+    plantingStage: createPlantationDto.plantingStage.toString(),
+});
+
+return await this.plantationRepository.save(plantation);
+
+  
   }
+
 
   async findPlantationsByFarmerCpf(cpf: string): Promise<Plantation[]> {
 
@@ -84,16 +99,19 @@ export class PlantationService {
     await this.plantationRepository.delete(id);
   }
 
-  chooseCombination(area: number, waterConsumption: string, plantingStage: string) {
+  chooseCombination(area: number, waterConsumption: string, plantingStage: string): string[] {
     for (const key in plantingCombinations) {
         const combination = plantingCombinations[key];
-        if (combination.area <= area && 
+        if (
+            combination.area <= area &&
             combination.waterConsumption === waterConsumption &&
-            combination.plantingStage === plantingStage) {
-            return combination.species;
+            combination.plantingStage === plantingStage
+        ) {
+            return combination.species; // Assume que `combination.species` é um array de strings
         }
     }
-    return "No combination found for the provided criteria.";
+    // Retorna um array vazio ou um array com uma mensagem padrão em vez de uma string:
+    return [];
   }
-
 }
+

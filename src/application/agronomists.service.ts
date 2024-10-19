@@ -42,7 +42,8 @@ export class AgronomistsService {
     }
 
     return agronomists;
-  }
+}
+
 
   async findAgronomistByCpf(cpf: string): Promise<any> {
     const agronomist = await this.agronomistRepository.createQueryBuilder('agronomist')
