@@ -36,7 +36,6 @@ export class FarmersController {
       const filteredFarmers = farmers.map(farmer => ({
         name: farmer.name,
         cpf: farmer.cpf,
-        agronomist: farmer.agronomist,
       }));
       return response.status(200).json({
         message: 'All farmers found successfully',

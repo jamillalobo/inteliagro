@@ -21,7 +21,4 @@ export class CreateFarmerDto {
     @IsNotEmpty()
     @IsNumber()
     sizeProperty: number;
-
-    @IsNotEmpty()
-    agronomistCpf: string;
 }

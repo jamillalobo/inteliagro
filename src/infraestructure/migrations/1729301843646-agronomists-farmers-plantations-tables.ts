@@ -1,59 +1,115 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
 export class AgronomistsFarmersPlantationsTables1729301843646 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
-        // Criação da extensão para UUID
-        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
-    
-        // Criação da tabela de Agronomists
-        await queryRunner.query(`
-            CREATE TABLE agronomists (
-                id uuid NOT NULL DEFAULT uuid_generate_v4(),
-                name varchar(256) NOT NULL,
-                cpf varchar(11) NOT NULL UNIQUE,
-                CONSTRAINT agronomist_pk PRIMARY KEY (id)
-            );
-        `);
-    
-        // Criação da tabela de Farmers
-        await queryRunner.query(`
-            CREATE TABLE farmers (
-                id uuid NOT NULL DEFAULT uuid_generate_v4(),
-                name varchar(256) NOT NULL,
-                cpf varchar(11) NOT NULL UNIQUE,
-                cep varchar(8) NOT NULL,
-                size_property float NOT NULL,
-                created_at timestamptz DEFAULT NOW(),
-                agronomist_id uuid NOT NULL,
-                CONSTRAINT farmer_pk PRIMARY KEY (id),
-                CONSTRAINT farmer_fk_agronomist FOREIGN KEY (agronomist_id) REFERENCES agronomists(id) ON DELETE CASCADE
-            );
-        `);
-    
-        // Criação da tabela de Plantations
-        await queryRunner.query(`
-            CREATE TABLE plantations (
-                id uuid NOT NULL DEFAULT uuid_generate_v4(),
-                combination text[] NOT NULL,
-                area float NOT NULL,
-                water_consumption varchar(256) NOT NULL,
-                planting_stage varchar(256) NOT NULL,
-                location varchar(256) NOT NULL,
-                farmer_id uuid NOT NULL,
-                CONSTRAINT plantation_pk PRIMARY KEY (id),
-                CONSTRAINT plantation_fk_farmer FOREIGN KEY (farmer_id) REFERENCES farmers(id) ON DELETE CASCADE
-            );
-        `);
+        // Creating the farmers table
+        await queryRunner.createTable(
+            new Table({
+                name: "farmers",
+                columns: [
+                    {
+                        name: "id",
+                        type: "uuid",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "uuid",
+                    },
+                    {
+                        name: "name",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "cpf",
+                        type: "varchar",
+                        isUnique: true,
+                        isNullable: false,
+                    },
+                    {
+                        name: "cep",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "size_property",
+                        type: "float",
+                        isNullable: false,
+                    },
+                    {
+                        name: "created_at",
+                        type: "timestamptz",
+                        default: "CURRENT_TIMESTAMP",
+                    },
+                ],
+            })
+        );
+
+        // Creating the plantations table
+        await queryRunner.createTable(
+            new Table({
+                name: "plantations",
+                columns: [
+                    {
+                        name: "id",
+                        type: "uuid",
+                        isPrimary: true,
+                        isGenerated: true,
+                        generationStrategy: "uuid",
+                    },
+                    {
+                        name: "combination",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "area",
+                        type: "float",
+                        isNullable: false,
+                    },
+                    {
+                        name: "water_consumption",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "planting_stage",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "location",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "farmer_id",
+                        type: "uuid",
+                        isNullable: false,
+                    },
+                ],
+            })
+        );
+
+        // Creating the foreign key relation between plantations and farmers
+        await queryRunner.createForeignKey(
+            "plantations",
+            new TableForeignKey({
+                columnNames: ["farmer_id"],
+                referencedColumnNames: ["id"],
+                referencedTableName: "farmers",
+                onDelete: "CASCADE",
+            })
+        );
     }
-    
+
     public async down(queryRunner: QueryRunner): Promise<void> {
-        // Drop da tabela de Plantations
-        await queryRunner.query(`DROP TABLE IF EXISTS plantations;`);
-    
-        // Drop da tabela de Farmers
-        await queryRunner.query(`DROP TABLE IF EXISTS farmers;`);
-    
-        // Drop da tabela de Agronomists
-        await queryRunner.query(`DROP TABLE IF EXISTS agronomists;`);
+        // Dropping the foreign key first
+        await queryRunner.dropForeignKey("plantations", "FK_farmer_plantations");
+
+        // Dropping the plantations table
+        await queryRunner.dropTable("plantations");
+
+        // Dropping the farmers table
+        await queryRunner.dropTable("farmers");
     }
 }

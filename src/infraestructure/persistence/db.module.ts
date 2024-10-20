@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Farmer } from 'src/domain/entities/farmer.entity';
+import { Plantation } from 'src/domain/entities/plantation.entity';
 
 @Module({
   imports: [
@@ -9,14 +11,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
-        host: 'localhost', // Usa 'db' como padrão
+        host: '3.142.247.75', // Usa 'db' como padrão
         port: 5432, // Converte para número
         username: 'postgres',
         password: '12345678',
         database: 'postgres',
         autoLoadEntities: true,
         synchronize: false,
-        migrations: ['./src/infraestructure/persistence/migrations/*.ts'], // Corrigi a grafia de 'infraestructure' para 'infrastructure'
+        entities: [Farmer, Plantation],
+        migrations: ['./src/infraestructure/persistence/migrations/*.ts'], 
+        migrationsRun: true,
         retryDelay: 3000,
         logging: true,
         logger: 'advanced-console',
