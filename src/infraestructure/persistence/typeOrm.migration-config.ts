@@ -7,7 +7,7 @@ config();
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: '3.142.247.75', 
+  host: 'inteliagro-db', 
   port: 5432, 
   username: 'postgres',
   password: '12345678',
