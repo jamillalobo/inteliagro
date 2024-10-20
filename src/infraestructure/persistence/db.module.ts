@@ -11,7 +11,7 @@ import { Plantation } from 'src/domain/entities/plantation.entity';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
-        host: '3.142.247.75', // Usa 'db' como padrão
+        host: 'inteliagro-db', // Usa 'db' como padrão
         port: 5432, // Converte para número
         username: 'postgres',
         password: '12345678',
