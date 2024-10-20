@@ -19,7 +19,11 @@ export class PlantationController {
         plantation,
       });
     } catch (error) {
-      console.error('Error creating plantation:', error);
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Error: Plantation not created!',
+        error: 'Bad Request',
+      });
     }
   }
 

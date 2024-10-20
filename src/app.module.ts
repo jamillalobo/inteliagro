@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AgronomistsModule } from './application/agronomists.module';
 import { FarmersModule } from './application/farmers.module';
 import { PlantationModule } from './application/plantation.module';
 import { HttpModule } from '@nestjs/axios';
@@ -10,7 +9,6 @@ import { DbModule } from './infraestructure/persistence/db.module'; // Corrigi a
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), // Habilita o ConfigModule globalmente
-    AgronomistsModule,
     FarmersModule,
     PlantationModule,
     HttpModule,

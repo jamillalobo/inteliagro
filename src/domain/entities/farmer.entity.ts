@@ -1,4 +1,3 @@
-import { Agronomist } from "src/domain/entities/agronomist.entity";
 import { Plantation } from "src/domain/entities/plantation.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -15,13 +14,6 @@ export class Farmer {
 
     @Column({ name: 'cep', nullable: false })
     cep: string;
-
-    @ManyToOne(() => Agronomist, (agronomist) => agronomist.farmers, {
-        nullable: false,
-        onDelete: 'CASCADE'
-    })
-    @JoinColumn({ name: 'agronomist_id' })
-    agronomist: Agronomist;
 
     @Column({ name: 'size_property', nullable: false })
     sizeProperty: number;

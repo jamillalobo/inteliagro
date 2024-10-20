@@ -6,8 +6,8 @@ export class Plantation {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column("simple-array", { name: 'combination', nullable: false })
-    combination: string[] ;
+    @Column({ name: 'combination', nullable: false })
+    combination: string;
 
     @Column({ name: 'area', type: 'float', nullable: false })
     area: number;
