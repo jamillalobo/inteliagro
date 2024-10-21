@@ -1,12 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { FarmersService } from '../../application/farmers.service';
 import { CreateFarmerDto } from './dto/create-farmer.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('farmers')
+@ApiTags('farmers')
 export class FarmersController {
   constructor(private readonly farmersService: FarmersService) {}
 
   @Post()
+  @ApiOperation({ summary: 'create a new farmer'})
   async create(
     @Res() response,
     @Body() createFarmerDto: CreateFarmerDto
@@ -30,6 +33,7 @@ export class FarmersController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'list all farmers'})
   async findAll(@Res() response) {
     try {
       const farmers = await this.farmersService.findAllFarmers();
@@ -47,6 +51,7 @@ export class FarmersController {
   }
 
   @Get(':cpf')
+  @ApiOperation({ summary: 'find farmer by cpf'})
   async findByCpf(
     @Res() response,
     @Param('cpf') cpf: string
@@ -63,6 +68,7 @@ export class FarmersController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'delete an existing farmer'})
   async delete(
     @Res() response,
     @Param('id') id: string) {
