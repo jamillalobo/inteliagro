@@ -3,12 +3,15 @@ import { PlantationService } from '../../application/plantation.service';
 import { CreatePlantationDto } from '../../presenter/http/dto/create-plantation.dto';
 import { UpdatePlantationDto } from '../../presenter/http/dto/update-plantation.dto';
 import { Plantation } from '../../domain/entities/plantation.entity';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('plantations')
+@ApiTags('plantations')
 export class PlantationController {
   constructor(private readonly plantationService: PlantationService) {}
 
   @Post()
+  @ApiOperation({ summary: 'create a new plantation'})
   async create(
     @Res() response,
     @Body() createPlantationDto: CreatePlantationDto): Promise<Plantation> {
@@ -28,6 +31,7 @@ export class PlantationController {
   }
 
   @Get('farmer/:cpf')
+  @ApiOperation({ summary: 'list plantations by farmer cpf'})
   async findPlantationsByFarmer(
     @Res() response,
     @Param('cpf') cpf: string
@@ -44,6 +48,7 @@ export class PlantationController {
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'update plantation'})
   async update(
     @Res() response,
     @Param('id') id: string, 
@@ -67,6 +72,7 @@ export class PlantationController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'delete an existing plantation'})
   async delete(
     @Res() response,
     @Param('id') id: string): Promise<void> {

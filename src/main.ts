@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 config();
 
@@ -12,6 +13,14 @@ async function bootstrap() {
   app.enableCors({
     origin: false,
   });
+
+  const config = new DocumentBuilder()
+    .setTitle("Inteliagro")
+    .setDescription("Inteliagro documentation API")
+    .setVersion('0.0.1')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('inteliagro', app, document);
 
   await app.listen(3000);
 }
